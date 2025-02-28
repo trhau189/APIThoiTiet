@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head lang="vi">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Thời tiết Hôm Nay</title>
+  </head>
+  <body>
+    <div id="thoitiet">
+      <p>Nhiệt độ: <span id="nhietdo"></span></p>
+      <p>Độ ẩm: <span id="doam"></span></p>
+    </div>
+    <!-- <script>
+      // Giả sử API trả về dữ liệu JSON như sau:
+      // { "nhietdo": 28, "doam": 70 }
+      fetch("") // Thay URL_API_CUA_DUBATHOITIET bằng URL API bạn nhận được
+        .then((response) => response.json())
+        .then((data) => {
+          document.getElementById("nhietdo").textContent = data.nhietdo + "°C";
+          document.getElementById("doam").textContent = data.doam + "%";
+        });
+    </script> -->
+  </body>
+</html>
