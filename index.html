@@ -78,7 +78,8 @@
           const unixTime = Math.floor(new Date(time).getTime() / 1000);
 
           // Thay thế YOUR_API_KEY và API_URL bằng thông tin API của bạn
-          const apiKey = "YOUR_API_KEY";
+          const apiKey =
+            "https://api.openweathermap.org/data/2.5/weather?q={cityname}&appid={APIkey}";
           const apiUrl = `API_URL?location=${location}&time=${unixTime}&key=${apiKey}`; // Ví dụ: API URL
 
           fetch(apiUrl)
