@@ -1,24 +1,105 @@
 <!DOCTYPE html>
 <html>
-  <head lang="vi">
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Thời tiết Hôm Nay</title>
-  </head>
-  <body>
-    <div id="thoitiet">
-      <p>Nhiệt độ: <span id="nhietdo"></span></p>
-      <p>Độ ẩm: <span id="doam"></span></p>
-    </div>
-    <!-- <script>
-      // Giả sử API trả về dữ liệu JSON như sau:
-      // { "nhietdo": 28, "doam": 70 }
-      fetch("") // Thay URL_API_CUA_DUBATHOITIET bằng URL API bạn nhận được
-        .then((response) => response.json())
-        .then((data) => {
-          document.getElementById("nhietdo").textContent = data.nhietdo + "°C";
-          document.getElementById("doam").textContent = data.doam + "%";
-        });
-    </script> -->
-  </body>
+  <html>
+    <head lang="vi">
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>Dự báo thời tiết</title>
+      <style>
+        body {
+          font-family: sans-serif;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 100vh;
+          margin: 0;
+          background-color: #f4f4f4;
+        }
+
+        .container {
+          background-color: #fff;
+          padding: 20px;
+          border-radius: 8px;
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+          width: 300px;
+        }
+
+        input[type="text"],
+        input[type="datetime-local"],
+        button {
+          width: calc(100% - 22px);
+          padding: 10px;
+          margin-bottom: 10px;
+          border: 1px solid #ddd;
+          border-radius: 4px;
+          box-sizing: border-box;
+        }
+
+        button {
+          background-color: #007bff;
+          color: white;
+          border: none;
+          cursor: pointer;
+        }
+
+        button:hover {
+          background-color: #0056b3;
+        }
+
+        #result {
+          margin-top: 20px;
+          border-top: 1px solid #eee;
+          padding-top: 10px;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <h2>Dự báo thời tiết</h2>
+        <input type="text" id="location" placeholder="Nhập địa điểm" />
+        <input type="datetime-local" id="time" />
+        <button onclick="getWeather()">Lấy thời tiết</button>
+        <div id="result"></div>
+      </div>
+
+      <script>
+        function getWeather() {
+          const location = document.getElementById("location").value;
+          const time = document.getElementById("time").value;
+          const resultDiv = document.getElementById("result");
+
+          // Kiểm tra xem địa điểm và thời gian có được nhập hay không
+          if (!location || !time) {
+            resultDiv.innerHTML = "<p>Vui lòng nhập địa điểm và thời gian.</p>";
+            return;
+          }
+
+          // Chuyển đổi thời gian sang định dạng Unix timestamp (nếu API yêu cầu)
+          const unixTime = Math.floor(new Date(time).getTime() / 1000);
+
+          // Thay thế YOUR_API_KEY và API_URL bằng thông tin API của bạn
+          const apiKey = "YOUR_API_KEY";
+          const apiUrl = `API_URL?location=${location}&time=${unixTime}&key=${apiKey}`; // Ví dụ: API URL
+
+          fetch(apiUrl)
+            .then((response) => response.json())
+            .then((data) => {
+              // Xử lý dữ liệu API trả về
+              if (data && data.temperature) {
+                // Thay 'temperature' bằng tên trường nhiệt độ trong dữ liệu API
+                resultDiv.innerHTML = `<p>Nhiệt độ tại ${location} vào lúc ${time}: ${data.temperature}°C</p>`;
+              } else {
+                resultDiv.innerHTML =
+                  "<p>Không thể lấy thông tin thời tiết.</p>";
+              }
+            })
+            .catch((error) => {
+              console.error("Lỗi:", error);
+              resultDiv.innerHTML =
+                "<p>Đã xảy ra lỗi khi lấy dữ liệu thời tiết.</p>";
+            });
+        }
+      </script>
+    </body>
+  </html>
 </html>
