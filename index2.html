@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dự báo thời tiết</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        background-color: #f4f4f4;
+      }
+
+      .container {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        width: 300px;
+      }
+
+      input[type="text"],
+      input[type="datetime-local"],
+      button {
+        width: calc(100% - 22px);
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        box-sizing: border-box;
+      }
+
+      button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #0056b3;
+      }
+
+      #result {
+        margin-top: 20px;
+        border-top: 1px solid #eee;
+        padding-top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Dự báo thời tiết</h2>
+      <input type="text" id="location" placeholder="Nhập địa điểm" />
+      <input type="date" id="time" />
+      <button onclick="getWeather()">Lấy thời tiết</button>
+      <div id="result"></div>
+    </div>
+
+    <script>
+      const appKey = "e366e03c4667fd5a847446f78effa184";
+
+      async function getWeather() {
+        let location = document.getElementById("location").value;
+        let date = document.getElementById("time").value;
+        let resultDiv = document.getElementById("result");
+
+        if (!location) {
+          resultDiv.innerHTML =
+            "<p style='color: red;'>Vui lòng nhập địa điểm!</p>";
+          return;
+        }
+
+        if (!date) {
+          resultDiv.innerHTML =
+            "<p style='color: red;'>Vui lòng chọn ngày!</p>";
+          return;
+        }
+
+        let apiUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${location}&appid=${appKey}&units=metric&lang=vi`;
+
+        try {
+          let response = await fetch(apiUrl);
+          let data = await response.json();
+
+          if (data.cod !== "200") {
+            resultDiv.innerHTML = `<p style='color: red;'>Lỗi: ${data.message}</p>`;
+            return;
+          }
+
+          let forecastList = data.list;
+          let selectedForecast = forecastList.find((item) =>
+            item.dt_txt.startsWith(date)
+          );
+
+          if (selectedForecast) {
+            let temp = selectedForecast.main.temp;
+            let weatherDesc = selectedForecast.weather[0].description;
+            let icon = selectedForecast.weather[0].icon;
+
+            resultDiv.innerHTML = `
+                        <h3>Thời tiết tại ${data.city.name} vào ngày ${date}</h3>
+                        <p>Nhiệt độ: ${temp}°C</p>
+                        <p>Thời tiết: ${weatherDesc}</p>
+                        <img src="http://openweathermap.org/img/wn/${icon}.png" alt="Weather icon">
+                    `;
+          } else {
+            resultDiv.innerHTML =
+              "<p>Không tìm thấy dữ liệu cho ngày đã chọn.</p>";
+          }
+        } catch (error) {
+          resultDiv.innerHTML =
+            "<p style='color: red;'>Lỗi khi lấy dữ liệu thời tiết!</p>";
+          console.error("Lỗi:", error);
+        }
+      }
+    </script>
+  </body>
+</html>
